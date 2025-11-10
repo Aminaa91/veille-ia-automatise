@@ -8,6 +8,7 @@ import { useSession, authClient } from "@/lib/auth-client";
 import { Loader2, ArrowLeft, Trash2, Clock, LogOut, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { VeilleResultDisplay } from "@/components/veille-result-display";
 
 interface Veille {
   id: number;
@@ -182,7 +183,7 @@ export default function VeilleDetailPage() {
 
       {/* Main Content */}
       <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           {/* Back Button */}
           <Button
             variant="ghost"
@@ -242,25 +243,27 @@ export default function VeilleDetailPage() {
                   </div>
                 </div>
               )}
-
-              {veille.resultat && (
-                <div>
-                  <h3 className="font-semibold mb-2">Résultat de la veille</h3>
-                  <div className="bg-muted p-4 rounded-lg text-sm whitespace-pre-wrap">
-                    {veille.resultat}
-                  </div>
-                </div>
-              )}
-
-              {!veille.resultat && (
-                <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 p-4 rounded-lg">
-                  <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                    Cette veille n'a pas encore de résultat généré.
-                  </p>
-                </div>
-              )}
             </CardContent>
           </Card>
+
+          {/* Résultat de la veille */}
+          {veille.resultat && (
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                <Sparkles className="h-6 w-6 text-primary" />
+                Résultat de la Veille
+              </h2>
+              <VeilleResultDisplay content={veille.resultat} />
+            </div>
+          )}
+
+          {!veille.resultat && (
+            <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 p-4 rounded-lg mb-8">
+              <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                Cette veille n'a pas encore de résultat généré.
+              </p>
+            </div>
+          )}
 
           {/* Historique Section */}
           <Card>
@@ -277,18 +280,14 @@ export default function VeilleDetailPage() {
                   <p>Aucun historique pour cette veille</p>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {historique.map((entry) => (
-                    <div
-                      key={entry.id}
-                      className="border-l-2 border-primary pl-4 py-2"
-                    >
-                      <div className="text-xs text-muted-foreground mb-2">
+                    <div key={entry.id} className="space-y-3">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Clock className="h-3 w-3" />
                         {formatDate(entry.createdAt)}
                       </div>
-                      <div className="text-sm whitespace-pre-wrap">
-                        {entry.contenu}
-                      </div>
+                      <VeilleResultDisplay content={entry.contenu} />
                     </div>
                   ))}
                 </div>
